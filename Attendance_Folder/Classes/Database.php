@@ -5,7 +5,7 @@ class Database
     private $host = "localhost";
     private $username = "root";
     private $password = "";
-    private $database = "oop_php";
+    private $database = "2_oop_php";
 
     private $pdo = null;
 
