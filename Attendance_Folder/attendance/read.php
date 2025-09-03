@@ -24,7 +24,7 @@ $statusMap = [
 
 <div class="<?= $mainCard ?> ">
 
-    <h2 class="<?= $h2 ?>">Student Attendees</h2>
+    <h2 class="<?= $h2 ?>">Attendances</h2>
 
     <div class="overflow-auto ">
         <table

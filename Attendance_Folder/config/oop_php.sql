@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -24,69 +23,117 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `attendance`
+-- Table structure for table `users`
 --
+-- user_id now has AUTO_INCREMENT and PRIMARY KEY defined directly in CREATE TABLE.
+--
+CREATE TABLE `users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `username` varchar(100) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL,
+  `role` enum('student','admin') NOT NULL DEFAULT 'student',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `attendance` (
-  `attendance_id` int(11) NOT NULL,
-  `name` varchar(100) DEFAULT NULL,
-  `date` date NOT NULL,
-  `status` enum('1','2','3') NOT NULL,
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `courses`
+--
+-- course_id now has AUTO_INCREMENT and PRIMARY KEY defined directly in CREATE TABLE.
+--
+CREATE TABLE `courses` (
+  `course_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `course_name` varchar(100) NOT NULL,
+  `year_level` varchar(20) NOT NULL,
+  `section` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `attendance`
---
-
-INSERT INTO `attendance` (`attendance_id`, `name`, `date`, `status`, `created_at`, `updated_at`) VALUES
-(33, 'Gavrie', '2025-08-26', '2', '2025-08-26 10:26:23', '2025-08-26 10:26:23');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `students`
 --
-
+-- Corrected the foreign key issue by adding a separate `user_id` column.
+-- `student_id` is now a primary key with AUTO_INCREMENT.
+--
 CREATE TABLE `students` (
+  `student_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`course_id`) REFERENCES `courses`(`course_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `attendance`
+--
+-- Removed the redundant `is_late` column.
+-- `attendance_id` now has AUTO_INCREMENT and PRIMARY KEY defined directly.
+--
+CREATE TABLE `attendance` (
+  `attendance_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `student_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `section` varchar(50) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `date` date NOT NULL,
+  `time_in` time NOT NULL,
+  `status` enum('present','absent','late') NOT NULL DEFAULT 'present',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Insert default admin user (password: admin123)
 --
 
---
--- Indexes for table `attendance`
---
-ALTER TABLE `attendance`
-  ADD PRIMARY KEY (`attendance_id`);
+INSERT INTO `users` (`username`, `password`, `role`) VALUES
+('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
 
 --
--- Indexes for table `students`
+-- Insert sample courses
 --
-ALTER TABLE `students`
-  ADD PRIMARY KEY (`student_id`);
+
+INSERT INTO `courses` (`course_name`, `year_level`, `section`) VALUES
+('UCOS', '4', '1'),
+('UCOS', '4', '2'),
+('UCOS', '4', '3'),
+('UCOS', '4', '4');
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `attendance`
+-- AUTO_INCREMENT for table `users`
 --
-ALTER TABLE `attendance`
-  MODIFY `attendance_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `courses`
+--
+ALTER TABLE `courses`
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
   MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `attendance`
+--
+ALTER TABLE `attendance`
+  MODIFY `attendance_id` int(11) NOT NULL AUTO_INCREMENT;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

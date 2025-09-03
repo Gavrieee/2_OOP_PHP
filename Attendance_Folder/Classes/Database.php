@@ -11,9 +11,12 @@ class Database
 
     private $primaryKeys = [
         "attendance" => "attendance_id",
+        "users" => "user_id",
+        "courses" => "course_id",
+        "students" => "student_id"
     ];
 
-    protected function getPDO()
+    public function getPDO()
     {
         if ($this->pdo === null) {
             try {
