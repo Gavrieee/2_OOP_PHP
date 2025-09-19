@@ -67,6 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             break;
 
+        case 'request':
+
+            break;
 
         default:
             $errors[] = "Unknown action: {$action}";

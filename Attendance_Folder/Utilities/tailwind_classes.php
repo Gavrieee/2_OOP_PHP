@@ -16,6 +16,8 @@ $mainCard2 = "max-w min-h-[100%] p-6 bg-white rounded-lg shadow-md mx-[20%] px-[
 
 $body2 = "bg-gray-100 p-[3%-]";
 
-$navbar = "bg-white shadow-sm border-b border-blue-500  overflow-x-auto";
+$navbar = "bg-white shadow-sm border-b border-blue-500 overflow-x-auto sticky top-0 z-50";
 
 $backButton = "border border-1 hover:bg-gray-500 border-gray-500 text-gray-500 hover:text-white px-4 py-2 rounded-md text-sm font-medium transition-all";
+
+$contentCard = 'bg-white rounded-lg shadow-md p-6 mb-8';

@@ -22,9 +22,6 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `users`
---
 -- user_id now has AUTO_INCREMENT and PRIMARY KEY defined directly in CREATE TABLE.
 --
 CREATE TABLE `users` (
@@ -37,9 +34,6 @@ CREATE TABLE `users` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `courses`
---
 -- course_id now has AUTO_INCREMENT and PRIMARY KEY defined directly in CREATE TABLE.
 --
 CREATE TABLE `courses` (
@@ -53,9 +47,6 @@ CREATE TABLE `courses` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `students`
---
 -- Corrected the foreign key issue by adding a separate `user_id` column.
 -- `student_id` is now a primary key with AUTO_INCREMENT.
 --
@@ -72,9 +63,6 @@ CREATE TABLE `students` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `attendance`
---
 -- Removed the redundant `is_late` column.
 -- `attendance_id` now has AUTO_INCREMENT and PRIMARY KEY defined directly.
 --
@@ -89,50 +77,33 @@ CREATE TABLE `attendance` (
   FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Insert default admin user (password: admin123)
---
+-- --------------------------------------------------------
 
+-- New table for excuse letters module
+CREATE TABLE `excuse_letters` (
+  `letter_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `student_id` int(11) NOT NULL,
+  `course_id` int(11) NOT NULL,
+  `subject` varchar(150) DEFAULT NULL,
+  `body` text NOT NULL,
+  `attachment_path` varchar(255) DEFAULT NULL,
+  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `admin_comment` text DEFAULT NULL,
+  `reviewed_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  FOREIGN KEY (`student_id`) REFERENCES `students`(`student_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`course_id`) REFERENCES `courses`(`course_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Seed data
 INSERT INTO `users` (`username`, `password`, `role`) VALUES
 ('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
-
---
--- Insert sample courses
---
 
 INSERT INTO `courses` (`course_name`, `year_level`, `section`) VALUES
 ('UCOS', '4', '1'),
 ('UCOS', '4', '2'),
 ('UCOS', '4', '3'),
 ('UCOS', '4', '4');
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `courses`
---
-ALTER TABLE `courses`
-  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `students`
---
-ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `attendance`
---
-ALTER TABLE `attendance`
-  MODIFY `attendance_id` int(11) NOT NULL AUTO_INCREMENT;
 
 COMMIT;
 

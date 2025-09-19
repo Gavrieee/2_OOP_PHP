@@ -50,10 +50,14 @@ class Course extends Database
     public function getAllCoursesWithDetails()
     {
         $sql = "SELECT c.*, COUNT(s.student_id) as student_count 
-                FROM {$this->table} c 
-                LEFT JOIN students s ON c.course_id = s.course_id 
-                GROUP BY c.course_id 
-                ORDER BY c.course_name, c.year_level";
+            FROM {$this->table} c 
+            LEFT JOIN students s ON c.course_id = s.course_id 
+            GROUP BY c.course_id 
+            ORDER BY 
+                c.course_name ASC, 
+                CAST(c.year_level AS UNSIGNED) ASC, 
+                CAST(c.section AS UNSIGNED) ASC";
         return $this->runQuery($sql)->fetchAll();
     }
+
 }
